@@ -4,8 +4,8 @@ from falseData import falseProducts
 app = Flask(__name__)
 
 
-@app.route('/catalogo')
-def devolverProductos():
+@app.route('/catalog')
+def getProducts():
     return jsonify(falseProducts)
 
 
