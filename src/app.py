@@ -10,8 +10,10 @@ dbConnection = MySQL(app)
 
 @app.route('/catalog')
 def getProducts():
-    return jsonify(falseData)
-    # return jsonify(adaptCatalog(getCatalog(dbConnection)))
+    response = jsonify(falseData)
+    response.headers.add("Access-Control-Allow-Origin",
+                         "*")
+    return response
 
 
 if __name__ == '__main__':
