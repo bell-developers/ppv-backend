@@ -1,6 +1,11 @@
+from openImage import openImage
+
+
 falseProducts = [
-    {"name": "Cartera", "price": 5000, "sizes": ['S', 'M']},
-    {"name": "Remera", "price": 1100, "sizes": ['S', 'L']},
-    {"name": "Pantalón", "price": 2340, "sizes": ['XL', 'XXL']},
-    {"name": "Short", "price": 1800, "sizes": ['XS', 'S', 'M']},
+    {
+        "name": "Cartera",
+        "price": 5000,
+        "sizes": ['S', 'M'],
+        "images": [openImage(r'C:\Programming\Projects\Bell\ppv\ppv-backend\images\remera-naranja.png')]
+    },
 ]
