@@ -4,14 +4,9 @@ from falseData import falseProducts
 app = Flask(__name__)
 
 
-@app.route('/catalog')
-def getProducts():
-    return jsonify(falseProducts)
-
-
-@app.route('/product/<id>')
-def getSingularProduct(id):
-    return "El id de su producto es: " + id
+@app.route("/product/<id>")
+def getSingleProduct(id):
+    return jsonify(falseProducts[0])
 
 
 if __name__ == '__main__':
