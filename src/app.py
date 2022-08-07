@@ -1,5 +1,6 @@
 from flask import Flask, jsonify
 from falseData import falseProducts
+from config import serverConfig
 
 app = Flask(__name__)
 
@@ -15,4 +16,5 @@ def getSingleProduct(id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.config.from_object(serverConfig["development"])
+    app.run(port=5000)
