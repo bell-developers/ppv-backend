@@ -19,8 +19,21 @@ def getCatalog():
     dbCursor.execute(query)
     # Guardamos los datos obtenidos en una variable
     data = dbCursor.fetchall()
-    print(data)
-    return "Consulta a la BD hecha!"
+    # Darle formato a los datos
+    # Creamos una nueva lista
+    catalog = []
+    # Accedemos a cada producto de los datos obtenidos
+    for productData in data:
+        # Formateamos los datos de cada producto
+        newProduct = {
+            "id": productData[0],
+            "name": productData[1],
+            "price": productData[2],
+        }
+        # Insertamos en la lista los datos ya formateados
+        catalog.append(newProduct)
+    # Le devolvemos al cliente la lista de datos formateados
+    return jsonify(catalog)
 
 
 @app.route("/product/<id>")
