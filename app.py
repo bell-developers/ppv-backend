@@ -1,4 +1,3 @@
-from urllib import response
 from flask import Flask, jsonify
 from falseData import falseProducts
 from flask_cors import CORS
@@ -22,7 +21,7 @@ def getProductsMock(times):
 
 @app.route('/product/<id>')
 def getSingularProduct(id):
-    return "El id de su producto es: " + id
+    return jsonify(falseProducts[0])
 
 
 if __name__ == '__main__':

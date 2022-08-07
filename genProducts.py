@@ -13,6 +13,6 @@ def genFalseData(id: int):
 
 def genProducts(times: int):
     products = []
-    for i in range(times):
+    for i in range(1, times):
         products.append(genFalseData(i))
     return products
