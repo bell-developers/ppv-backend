@@ -1,8 +1,11 @@
 from flask import Flask, jsonify
 from falseData import falseProducts
 from config import serverConfig
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
+
+dbConnection = MySQL(app)
 
 
 @app.route("/catalog")
