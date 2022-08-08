@@ -47,6 +47,10 @@ def getSingleProduct(id):
         "name": firstProduct[1],
         "price": firstProduct[2]
     }
+    dbCursor.execute(
+        "select image from product_image where id_product = " + str(id))
+    images = dbCursor.fetchall()
+    print(images)
     return jsonify(newProduct)
 
 
