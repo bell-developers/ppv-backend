@@ -38,10 +38,16 @@ def getCatalog():
 
 @app.route("/product/<id>")
 def getSingleProduct(id):
-    dbCursor = dbConnection.connection.cursor() 
-    dbCursor.execute("select * from product where id = 1;")
+    dbCursor = dbConnection.connection.cursor()
+    dbCursor.execute("select * from product where id_product = " + str(id))
     returnedData = dbCursor.fetchall()
-    return jsonify(falseProducts[0])
+    firstProduct = returnedData[0]
+    newProduct = {
+        "id": firstProduct[0],
+        "name": firstProduct[1],
+        "price": firstProduct[2]
+    }
+    return jsonify(newProduct)
 
 
 if __name__ == '__main__':
