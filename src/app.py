@@ -1,9 +1,17 @@
 from flask import Flask, jsonify
-from falseData import falseProducts
 from config import serverConfig
 from flask_mysqldb import MySQL
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+
+# Habilitar todos
+# CORS(app)
+
+# Habilitar solo dominios definidos
+CORS(app, resources={
+    r"/*": {"origins": "http://localhost:3000"}
+})
 
 # Conexión a MySQL
 dbConnection = MySQL(app)
