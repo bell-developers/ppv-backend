@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from falseData import falseProducts
 from config import serverConfig
 from flask_mysqldb import MySQL
+from blobToBase64 import blobToBase64
 
 app = Flask(__name__)
 
@@ -45,13 +46,17 @@ def getSingleProduct(id):
     newProduct = {
         "id": firstProduct[0],
         "name": firstProduct[1],
-        "price": firstProduct[2]
+        "price": firstProduct[2],
+        "images": []
     }
     dbCursor.execute(
         "select image from product_image where id_product = " + str(id))
     images = dbCursor.fetchall()
-    print(images)
+    for image in images:
+        convertedImage = blobToBase64(image)
+        newProduct.images.append(convertedImage)
     return jsonify(newProduct)
+
 
 
 if __name__ == '__main__':
