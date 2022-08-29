@@ -53,10 +53,9 @@ def getSingleProduct(id):
         "select image from product_image where id_product = " + str(id))
     images = dbCursor.fetchall()
     for image in images:
-        convertedImage = blobToBase64(image)
-        newProduct.images.append(convertedImage)
+        convertedImage = blobToBase64(image[0])
+        newProduct["images"].append(convertedImage)
     return jsonify(newProduct)
-
 
 
 if __name__ == '__main__':
