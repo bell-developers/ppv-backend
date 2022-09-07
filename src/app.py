@@ -1,5 +1,4 @@
 from flask import Flask, jsonify
-from falseData import falseProducts
 from config import serverConfig
 from flask_mysqldb import MySQL
 from blobToBase64 import blobToBase64
@@ -12,6 +11,7 @@ dbConnection = MySQL(app)
 
 @app.route("/catalog")
 def getCatalog():
+    # Conseguir datos de productos
     # Consulta SQL
     query = "select * from product;"
     # Crea un cursor
@@ -20,6 +20,7 @@ def getCatalog():
     dbCursor.execute(query)
     # Guardamos los datos obtenidos en una variable
     data = dbCursor.fetchall()
+
     # Darle formato a los datos
     # Creamos una nueva lista
     catalog = []
@@ -30,9 +31,16 @@ def getCatalog():
             "id": productData[0],
             "name": productData[1],
             "price": productData[2],
+            "images": []
         }
+        getImagesQuery = f"select image from product_image where id_product = {productData[0]};"
+        dbCursor.execute(getImagesQuery)
+        receivedImages = dbCursor.fetchall()
+        for receivedImage in receivedImages:
+            newProduct["images"].append(blobToBase64(receivedImage[0]))
         # Insertamos en la lista los datos ya formateados
         catalog.append(newProduct)
+
     # Le devolvemos al cliente la lista de datos formateados
     return jsonify(catalog)
 
