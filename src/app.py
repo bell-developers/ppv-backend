@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from config import serverConfig
 from flask_mysqldb import MySQL
 from blobToBase64 import blobToBase64
@@ -64,6 +64,18 @@ def getSingleProduct(id):
         convertedImage = blobToBase64(image[0])
         newProduct["images"].append(convertedImage)
     return jsonify(newProduct)
+
+
+@app.route("/product", methods=["POST"])
+def createProduct():
+    name = request.json["name"]
+    price = request.json["price"]
+    query = f"insert into product (name, price) values ('{name}' , {price});"
+    dbCursor = dbConnection.connection.cursor()
+    dbCursor.execute(query)
+    dbConnection.connection.commit()
+    print(query)
+    return "Product created"
 
 
 if __name__ == '__main__':
