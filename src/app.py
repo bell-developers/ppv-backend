@@ -1,6 +1,7 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from config import serverConfig
 from flask_mysqldb import MySQL
+from blobToBase64 import blobToBase64
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
@@ -19,6 +20,7 @@ dbConnection = MySQL(app)
 
 @app.route("/catalog")
 def getCatalog():
+    # Conseguir datos de productos
     # Consulta SQL
     query = "select * from product;"
     # Crea un cursor
@@ -27,6 +29,7 @@ def getCatalog():
     dbCursor.execute(query)
     # Guardamos los datos obtenidos en una variable
     data = dbCursor.fetchall()
+
     # Darle formato a los datos
     # Creamos una nueva lista
     catalog = []
@@ -37,9 +40,16 @@ def getCatalog():
             "id": productData[0],
             "name": productData[1],
             "price": productData[2],
+            "images": []
         }
+        getImagesQuery = f"select image from product_image where id_product = {productData[0]};"
+        dbCursor.execute(getImagesQuery)
+        receivedImages = dbCursor.fetchall()
+        for receivedImage in receivedImages:
+            newProduct["images"].append(blobToBase64(receivedImage[0]))
         # Insertamos en la lista los datos ya formateados
         catalog.append(newProduct)
+
     # Le devolvemos al cliente la lista de datos formateados
     return jsonify(catalog)
 
@@ -53,13 +63,28 @@ def getSingleProduct(id):
     newProduct = {
         "id": firstProduct[0],
         "name": firstProduct[1],
-        "price": firstProduct[2]
+        "price": firstProduct[2],
+        "images": []
     }
     dbCursor.execute(
         "select image from product_image where id_product = " + str(id))
     images = dbCursor.fetchall()
-    print(images)
+    for image in images:
+        convertedImage = blobToBase64(image[0])
+        newProduct["images"].append(convertedImage)
     return jsonify(newProduct)
+
+
+@app.route("/product", methods=["POST"])
+def createProduct():
+    name = request.json["name"]
+    price = request.json["price"]
+    query = f"insert into product (name, price) values ('{name}' , {price});"
+    dbCursor = dbConnection.connection.cursor()
+    dbCursor.execute(query)
+    dbConnection.connection.commit()
+    print(query)
+    return "Product created"
 
 
 if __name__ == '__main__':
