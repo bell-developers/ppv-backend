@@ -7,7 +7,7 @@ def genFalseData(id: int):
         "name": "Remera Naranja",
         "price": 550,
         "sizes": ['S', 'M'],
-        "images": [openImage(r'C:\Programming\Projects\Bell\ppv\ppv-backend\images\1.jpg')]
+        "images": [openImage(r'\images\1.jpg')]
     }
 
 
