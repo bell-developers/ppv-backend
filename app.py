@@ -47,7 +47,7 @@ def getCatalog():
 
 @app.route("/catalog/<times>")
 def getCatalogByTimes(times):
-    return jsonify(genProducts(int(times)))
+    return jsonify(genProducts(app.root_path))
 
 
 @app.route("/product/<id>")
