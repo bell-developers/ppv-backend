@@ -70,7 +70,7 @@ def getSingleProduct(id):
     # for image in images:
     #     convertedImage = blobToBase64(image[0])
     #     newProduct["images"].append(convertedImage)
-    return jsonify(genProducts(40)[int(id) - 1])
+    return jsonify(genProducts(app.root_path)[int(id) - 1])
 
 
 @app.route("/product", methods=["POST"])
