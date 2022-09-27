@@ -3,8 +3,10 @@ from genProducts import genProducts
 from src.config import serverConfig
 from flask_mysqldb import MySQL
 from src.blobToBase64 import blobToBase64
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 dbConnection = MySQL(app)
 
