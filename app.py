@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request
-from config import serverConfig
+from src.config import serverConfig
 from flask_mysqldb import MySQL
-from blobToBase64 import blobToBase64
-from flask_cors import CORS, cross_origin
+from src.blobToBase64 import blobToBase64
+from flask_cors import CORS
 
 app = Flask(__name__)
 
