@@ -1,13 +1,20 @@
 from flask import Flask, jsonify, request
-from genProducts import genProducts
-from src.config import serverConfig
+from config import serverConfig
 from flask_mysqldb import MySQL
-from src.blobToBase64 import blobToBase64
-from flask_cors import CORS
+from blobToBase64 import blobToBase64
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-CORS(app)
 
+# Habilitar todos
+# CORS(app)
+
+# Habilitar solo dominios definidos
+CORS(app, resources={
+    r"/*": {"origins": "http://localhost:3000"}
+})
+
+# Conexión a MySQL
 dbConnection = MySQL(app)
 
 
@@ -47,30 +54,25 @@ def getCatalog():
     return jsonify(catalog)
 
 
-@app.route("/catalog/<times>")
-def getCatalogByTimes(times):
-    return jsonify(genProducts(app.root_path))
-
-
 @app.route("/product/<id>")
 def getSingleProduct(id):
-    # dbCursor = dbConnection.connection.cursor()
-    # dbCursor.execute("select * from product where id_product = " + str(id))
-    # returnedData = dbCursor.fetchall()
-    # firstProduct = returnedData[0]
-    # newProduct = {
-    #     "id": firstProduct[0],
-    #     "name": firstProduct[1],
-    #     "price": firstProduct[2],
-    #     "images": []
-    # }
-    # dbCursor.execute(
-    #     "select image from product_image where id_product = " + str(id))
-    # images = dbCursor.fetchall()
-    # for image in images:
-    #     convertedImage = blobToBase64(image[0])
-    #     newProduct["images"].append(convertedImage)
-    return jsonify(genProducts(app.root_path)[int(id) - 1])
+    dbCursor = dbConnection.connection.cursor()
+    dbCursor.execute("select * from product where id_product = " + str(id))
+    returnedData = dbCursor.fetchall()
+    firstProduct = returnedData[0]
+    newProduct = {
+        "id": firstProduct[0],
+        "name": firstProduct[1],
+        "price": firstProduct[2],
+        "images": []
+    }
+    dbCursor.execute(
+        "select image from product_image where id_product = " + str(id))
+    images = dbCursor.fetchall()
+    for image in images:
+        convertedImage = blobToBase64(image[0])
+        newProduct["images"].append(convertedImage)
+    return jsonify(newProduct)
 
 
 @app.route("/product", methods=["POST"])
