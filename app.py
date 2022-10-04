@@ -1,13 +1,15 @@
+import os
+from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from src.config import serverConfig
 from flask_mysqldb import MySQL
 from src.blobToBase64 import blobToBase64
 from flask_cors import CORS
 
+load_dotenv()
+
 app = Flask(__name__)
 
-# Habilitar todos
-# CORS(app)
 
 # Habilitar solo dominios definidos
 CORS(app, resources={
@@ -85,6 +87,22 @@ def createProduct():
     dbConnection.connection.commit()
     print(query)
     return "Product created"
+
+
+@app.route("/login", methods=["POST"])
+def loginUser():
+    user = request.json["user"]
+    password = request.json["password"]
+
+    query = f"select * from user where username='{user}' and password='{password}'"
+    dbCursor = dbConnection.connection.cursor()
+    dbCursor.execute(query)
+    userTuple = dbCursor.fetchall()
+
+    if len(userTuple) == 0:
+        return "Usuario no existe"
+    else:
+        return "Usuario existe"
 
 
 if __name__ == '__main__':
