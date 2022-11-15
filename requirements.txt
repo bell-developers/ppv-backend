@@ -13,7 +13,6 @@ MarkupSafe==2.1.1
 mysqlclient==2.1.1
 platformdirs==2.5.2
 pycodestyle==2.8.0
-python-dotenv==0.21.0
 six==1.16.0
 toml==0.10.2
 virtualenv==20.16.5

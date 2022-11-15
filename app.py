@@ -1,22 +1,13 @@
-import os
-from dotenv import load_dotenv
 from flask import Flask, jsonify, request
+from genProducts import genProducts
 from src.config import serverConfig
 from flask_mysqldb import MySQL
 from src.blobToBase64 import blobToBase64
 from flask_cors import CORS
 
-load_dotenv()
-
 app = Flask(__name__)
+CORS(app)
 
-
-# Habilitar solo dominios definidos
-CORS(app, resources={
-    r"/*": {"origins": "http://localhost:3000"}
-})
-
-# Conexión a MySQL
 dbConnection = MySQL(app)
 
 
@@ -56,25 +47,30 @@ def getCatalog():
     return jsonify(catalog)
 
 
+@app.route("/catalog/<times>")
+def getCatalogByTimes(times):
+    return jsonify(genProducts(app.root_path))
+
+
 @app.route("/product/<id>")
 def getSingleProduct(id):
-    dbCursor = dbConnection.connection.cursor()
-    dbCursor.execute("select * from product where id_product = " + str(id))
-    returnedData = dbCursor.fetchall()
-    firstProduct = returnedData[0]
-    newProduct = {
-        "id": firstProduct[0],
-        "name": firstProduct[1],
-        "price": firstProduct[2],
-        "images": []
-    }
-    dbCursor.execute(
-        "select image from product_image where id_product = " + str(id))
-    images = dbCursor.fetchall()
-    for image in images:
-        convertedImage = blobToBase64(image[0])
-        newProduct["images"].append(convertedImage)
-    return jsonify(newProduct)
+    # dbCursor = dbConnection.connection.cursor()
+    # dbCursor.execute("select * from product where id_product = " + str(id))
+    # returnedData = dbCursor.fetchall()
+    # firstProduct = returnedData[0]
+    # newProduct = {
+    #     "id": firstProduct[0],
+    #     "name": firstProduct[1],
+    #     "price": firstProduct[2],
+    #     "images": []
+    # }
+    # dbCursor.execute(
+    #     "select image from product_image where id_product = " + str(id))
+    # images = dbCursor.fetchall()
+    # for image in images:
+    #     convertedImage = blobToBase64(image[0])
+    #     newProduct["images"].append(convertedImage)
+    return jsonify(genProducts(app.root_path)[int(id) - 1])
 
 
 @app.route("/product", methods=["POST"])
@@ -87,22 +83,6 @@ def createProduct():
     dbConnection.connection.commit()
     print(query)
     return "Product created"
-
-
-@app.route("/login", methods=["POST"])
-def loginUser():
-    user = request.json["user"]
-    password = request.json["password"]
-
-    query = f"select * from user where username='{user}' and password='{password}'"
-    dbCursor = dbConnection.connection.cursor()
-    dbCursor.execute(query)
-    userTuple = dbCursor.fetchall()
-
-    if len(userTuple) == 0:
-        return "Usuario no existe"
-    else:
-        return "Usuario existe"
 
 
 if __name__ == '__main__':
